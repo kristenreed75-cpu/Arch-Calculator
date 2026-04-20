@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCH STUDIOS</title>
+</head>
+
+<style>
+    body {
+        margin: 0;
+        background: #5FA6FC;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #3E8070;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        font-size: 64px;
+        margin: 0;
+        letter-spacing: 2px;
+        text-align: center;
+    }
+
+    /* Top row headings */
+    .row {
+        display: flex;
+        justify-content: flex-start;
+        gap: 450px;
+        width: 100%;
+        padding: 0 40px;
+        margin-top: 20px;
+    }
+
+    h2, h3 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: 4px;
+        color: #3E8070;
+    }
+
+    h3 {
+        padding-right: 100px;
+    }
+
+    /* SIDE-BY-SIDE CALCULATOR LAYOUT */
+    .calculator-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px;
+        padding: 0 40px;
+        margin-top: 40px;
+    }
+
+    .calculator-section {
+        flex: 1;
+        background: rgba(255,255,255,0.3);
+        border-radius: 12px;
+        padding: 40px;
+        min-height: 500px;
+        font-size: 20px;
+    }
+
+    .calculator-section label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 8px;
+        font-size: 20px;
+    }
+
+    .calculator-section select,
+    .calculator-section input {
+        padding: 12px 16px;
+        border-radius: 6px;
+        border: 2px solid #3E8070;
+        background: #ffffff;
+        color: #3E8070;
+        font-size: 18px;
+        margin-bottom: 18px;
+        width: 300px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 14px 28px;
+        border-radius: 6px;
+        border: none;
+        background: #3E8070;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .result {
+        margin-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+
+    <h1> ARCH STUDIOS CALCULATOR</h1>
+
+    <div class="row">
+        <h2></h2>
+        <h3></h3>
+    </div>
+
+    <!-- SIDE-BY-SIDE CALCULATORS -->
+    <div class="calculator-container">
+
+        <!-- TIMELINE CALCULATOR -->
+        <div class="calculator-section">
+            <h2>Time Calculations</h2>
+
+            <label>Project Type:</label>
+            <select id="projectType">
+                <option value="remodel">Residential</option>
+                <option value="addition">Commercial</option>
+                <option value="new_build">Institutional</option>
+            </select>
+
+            <label>Size:</label>
+            <select id="size">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+            </select>
+
+            <label>Complexity:</label>
+            <select id="complexity">
+                <option value="simple">Simple</option>
+                <option value="moderate">Moderate</option>
+                <option value="complex">Complex</option>
+            </select>
+
+            <button onclick="showTimeline()">Calculate Timeline</button>
+
+            <div id="timelineResult" class="result"></div>
+        </div>
+
+        <!-- COST CALCULATOR -->
+        <div class="calculator-section">
+            <h2>Cost Calculations</h2>
+
+            <label>Square Footage:</label>
+            <input type="number" id="squareFeet" placeholder="Enter sq ft">
+
+            <label>Building Type:</label>
+            <select id="costProjectType">
+                <option value="remodel">Residential</option>
+                <option value="addition">Commercial</option>
+                <option value="new_build">Institutional</option>
+            </select>
+
+            <label>Materials:</label>
+            <select id="materials">
+                <option value="standard">Standard</option>
+                <option value="upgraded">Upgraded</option>
+                <option value="premium">Premium</option>
+            </select>
+
+            <button onclick="showCost()">Calculate Cost</button>
+
+            <div id="costResult" class="result"></div>
+        </div>
+
+    </div>
+
+<script>
+/* TIMELINE CALCULATION */
+function showTimeline() {
+    const type = document.getElementById("projectType").value;
+    const size = document.getElementById("size").value;
+    const complexity = document.getElementById("complexity").value;
+
+    const result = calculateTimeline(type, size, complexity);
+
+    document.getElementById("timelineResult").innerText =
+        "Estimated Timeline: " + result + " days";
+}
+
+function calculateTimeline(projectType, size, complexity) {
+    const baseDurations = {
+        remodel: 30,
+        addition: 45,
+        new_build: 90
+    };
+
+    const sizeMultiplier = {
+        small: 1,
+        medium: 1.3,
+        large: 1.6
+    };
+
+    const complexityMultiplier = {
+        simple: 1,
+        moderate: 1.4,
+        complex: 1.8
+    };
+
+    let duration = baseDurations[projectType];
+    duration *= sizeMultiplier[size];
+    duration *= complexityMultiplier[complexity];
+
+    return Math.round(duration);
+}
+
+
+/* COST CALCULATION */
+function showCost() {
+    const sqft = Number(document.getElementById("squareFeet").value);
+    const type = document.getElementById("costProjectType").value;
+    const materials = document.getElementById("materials").value;
+
+    const result = calculateCost(sqft, type, materials);
+
+    document.getElementById("costResult").innerText =
+        "Estimated Cost Range: $" + result.low.toLocaleString() +
+        " - $" + result.high.toLocaleString();
+}
+
+function calculateCost(sqft, projectType, materials) {
+    const baseCost = {
+        remodel: 150,
+        addition: 200,
+        new_build: 250
+    };
+
+    const materialMultiplier = {
+        standard: 1,
+        upgraded: 1.3,
+        premium: 1.6
+    };
+
+    let costPerSqFt = baseCost[projectType] * materialMultiplier[materials];
+    let total = sqft * costPerSqFt;
+
+    return {
+        low: Math.round(total * 0.9),
+        high: Math.round(total * 1.1)
+    };
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
